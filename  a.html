@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SMP</title>
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAARJSURBVHhe7ZxNqBxlAIb/Tg8VpIiIeCMoKCiIIN6Uh3gQBA+CIHgQTxUE8aAiiEdB8SCo4ElB8eBBeBGUHkTEg6AIGpQoKCh4kVLp1W6vD7Njs5M5M5kd2Z3Zmd3u/8PZnZ257//M/plJSlpaWlpaWlpaWlpa+p8FfP9i+An+hT/hs/AIv8L78Ap+B7+D3+Gv8Bf4Pz7jT/h/rq55rP8RvgLfwF/gE7yMf+Gv8DG8g4+wl5eZxwK/wlf4F/4Kv8Lf4f/wc/gBvof/wC/4C8578C/sBf/B36AX/A5/gV/gWb+L/4bfy/P63rQf5kP4E7wOX+ET+Cg+hI+wr/A5PAn/ha/D3+HH8C/sZ/A5/AX+hGvA25j+KvgWPsHn8A08hE+xT5nBjg1P4c/wY/gWnofP8AH2KTM4seH38F/4Y/wP/wT/hR/Ch/AF9ikzOKHhP/g3/Bu+hE/wB+wpMzij4Y/wL/wePof/wI/Yp8zijIXP4cvwLfyE38In2KfM4ISF/8K/4Tf4G/4N/4EfYJ8yghMWPocv8C0s/pvfYp8yghIWPsV+eGfA2vgWPsF+eGfC2vgb/w3dgD9inzwysjS/D/2D72LfM4ISMjU/D/+DXsPezb5nBCBmZ/wF/g72bvc8ISNj8P+xb5nBCBsbC/+Dfs2+ZwAgZGc/Dl2H/Zs8zAhIyPocvYd8yghEyMp7Ct2HfZu8zAhA2/hPbh33b/M4IQNjIehS+xT5nBCBkbD+Hb2LdM4ISMDGehT5nBCBkZj+Fr2HfMr4zAhA2M5/BpbJvmV8ZwQgbGY+x8ZsV+Z3QgLGx+DL2bTI7oQBj43/wPezbZHZCBsRj+HHu2+Z0QgLEx/Cl8C3dmfCEAY2P4f+zZ5nZCAsZn+B/s2+Z2QgLGx+Hb2LdM7oQMDGf/H2Y75nZCBgYz8FXsW+Z2QgbG38NH8K+ZW4nZGDs/gX7ldidsIGx+C/sV+J2QgbG38E/Yd8yuRMysB/7D/uV2JyQgbH4b+xXYnZCAsbfsL+wX4nZCBsb/wn7hfidkIGx+DfsV2J2Qgb2b/O1sL9fidsIGxsbX4f9+1XYnZCBsV/4P/ZrsTsjg2Pj+/C/X4XdCRsY+4fP4Hq/CrkTMrAffwdf51didsIGxsb/4Pq8CiMnZGDsH17AdXlVREZGxv7D53C9XkVmJWRg7B/+A1fjVWI2QgbG/uEzuFqvxKyEDIz9wz/jar0SsxIysHcP/xXX7VViVsIGRv7hD3E9X4VZCdsY2fv/w1fiBfA/4bX4C3yW35P52+1/gL/g3/A/+BN8m33KDI6Mb8N/4e/wOXyAfcoMjoz/4b/wl/A3+D72KTM4Mr4Lf4W/wb/gM+xTZjAyshv+DX+Db8Jb2KfMYMjoZvhv/AV+hM/hW+xTZjAkdPv+C/AX/A/+E/YpM5j/D4X/4C/Yp8xAyOif4VvYp8xAyPg/bFv2n/z/bWlpaWlpaWlpaWlpaet/6z/L9K2vW9s8/wAAAABJRU5ErkJggg==">
+    <style>
+        :root { --primary-bg: #000; --secondary-bg: #1a1a1a; --text-color: #fff; --border-color: #333; --highlight-color: #00aaff; --price-color: #28a745; --danger-color: #dc3545; }
+        body { background-color: var(--primary-bg); color: var(--text-color); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background-color: var(--secondary-bg); border-bottom: 2px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
+        main { padding: 20px; }
+        .section-title { text-align: left; margin: 40px 0 20px 0; font-size: 1.8em; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+        .gallery, .new-products-container { display: flex; gap: 25px; margin-top: 20px; }
+        .new-products-container { overflow-x: auto; padding-bottom: 20px; scrollbar-width: thin; }
+        .gallery { flex-wrap: wrap; justify-content: center; }
+        .product-card { background-color: var(--secondary-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 20px; width: 300px; text-align: center; flex-shrink: 0; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+        .product-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; }
+        .product-card h3 { color: var(--highlight-color); margin: 10px 0; } .product-card .price { font-weight: bold; color: var(--price-color); }
+        .badge { position: absolute; top: 12px; left: 12px; background: rgba(0,170,255,0.95); color: #000; padding: 6px 10px; border-radius: 20px; font-weight: bold; font-size: 0.9em; }
+        .banner { width: 100%; padding: 12px 20px; background: linear-gradient(90deg,#003344,#005577); color: white; text-align: center; border-bottom: 2px solid #123; }
+        button { background: linear-gradient(45deg, #007bff, #00aaff); color: white; border: none; padding: 12px 25px; cursor: pointer; border-radius: 5px; font-size: 1em; font-weight: bold; margin-top: 15px; }
+        button.cancel-btn, #logout-btn { background: linear-gradient(45deg, #c40c0c, #ff4c4c); }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); justify-content: center; align-items: center; }
+        .modal-content { background-color: #2b2b2b; padding: 30px; border: 1px solid #555; width: 90%; max-width: 500px; border-radius: 10px; position: relative; }
+        .close-btn { position: absolute; top: 10px; right: 20px; font-size: 30px; font-weight: bold; cursor: pointer; }
+        form label { display: block; text-align: left; margin-top: 15px; font-weight: bold; }
+        form input, form textarea, form select { width: 100%; padding: 12px; margin-top: 8px; background-color: #333; border: 1px solid #555; color: white; border-radius: 5px; box-sizing: border-box;}
+        form button { width: 100%; }
+        .admin-section { display: none; background-color: #1a1a1a; padding: 30px; margin: 20px; border-radius: 8px; }
+        .admin-tab-container { display: flex; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; flex-wrap: wrap; gap:8px; }
+        .admin-tab { padding: 10px 20px; cursor: pointer; background: #333; border: none; color: white; border-radius: 5px 5px 0 0; }
+        .admin-tab.active { background: var(--highlight-color); }
+        .admin-tab-content { display: none; } .admin-tab-content.active { display: block; }
+        .hidden { display: none !important; }
+        .manage-item, .admin-list-item, .order-item { background-color: #333; padding: 15px; border-radius: 5px; margin-bottom: 10px; list-style: none; }
+        .manage-item, .admin-list-item { display: flex; justify-content: space-between; align-items: center; }
+        #toast-notification { visibility: hidden; opacity: 0; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background-color: var(--highlight-color); color: white; padding: 16px; border-radius: 8px; z-index: 2000; transition: all 0.5s; text-align: center; }
+        #toast-notification.show { visibility: visible; opacity: 1; }
+        .small { font-size:0.9em;color:#bbb; }
+        .global-settings-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:start; }
+        @media (max-width:700px){ .global-settings-grid{grid-template-columns:1fr} .product-card{width:260px} }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <h1>SMP</h1>
+            <div id="global-note" class="small" style="margin-top:-6px;"></div>
+        </div>
+        <div>
+            <button id="settings-btn">Login</button>
+            <button id="logout-btn" class="hidden">Logout</button>
+        </div>
+    </header>
+
+    <div id="global-banner" class="banner hidden"></div>
+
+    <main>
+        <h2 class="section-title">New Products</h2>
+        <div id="new-product-gallery" class="new-products-container"></div>
+
+        <h2 class="section-title">All Products</h2>
+        <div id="all-product-gallery" class="gallery"></div>
+    </main>
+
+    <!-- Admin Panel -->
+    <div id="admin-panel" class="admin-section">
+        <div class="admin-tab-container">
+            <button class="admin-tab" onclick="openTab(event, 'upload-product')">Upload Product</button>
+            <button class="admin-tab" onclick="openTab(event, 'manage-products')">Manage Products</button>
+            <button class="admin-tab" onclick="openTab(event, 'manage-orders')">Manage Orders</button>
+            <button class="admin-tab super-admin-only hidden" onclick="openTab(event, 'manage-admins')">Manage Admins</button>
+            <button class="admin-tab super-admin-only hidden" onclick="openTab(event, 'data-backup')">Data Backup</button>
+            <button class="admin-tab" onclick="openTab(event,'global-settings')">Global Settings</button>
+        </div>
+
+        <div id="upload-product" class="admin-tab-content">
+            <form id="upload-form"></form>
+        </div>
+
+        <div id="manage-products" class="admin-tab-content">
+            <h2>Manage Your Products</h2>
+            <div id="manage-products-list"></div>
+        </div>
+
+        <div id="manage-orders" class="admin-tab-content">
+            <h2>Manage Orders</h2>
+            <h3>Pending Orders (<span id="pending-count">0</span>)</h3>
+            <ul id="pending-orders-list" style="padding:0;"></ul>
+            <h3>Completed Orders (<span id="completed-count">0</span>)</h3>
+            <ul id="completed-orders-list" style="padding:0;"></ul>
+        </div>
+
+        <div id="manage-admins" class="admin-tab-content super-admin-only hidden">
+            <h2>Manage Admins</h2>
+            <form id="add-admin-form"></form>
+            <h3>Existing Admins</h3>
+            <ul id="admin-list" style="padding:0;"></ul>
+        </div>
+
+        <div id="data-backup" class="admin-tab-content super-admin-only hidden">
+            <h2>Data Backup & Restore</h2>
+            <button onclick="exportData()">Export Data</button>
+            <hr>
+            <p>Restore data</p>
+            <input type="file" id="import-file" accept=".json">
+            <button onclick="importData()">Import Data</button>
+        </div>
+
+        <div id="global-settings" class="admin-tab-content">
+            <h2>Global Settings (apply once → affects all products)</h2>
+            <div style="margin-bottom:12px;">
+                <button onclick="applySettingsNow()">Apply Settings Now to existing products</button>
+            </div>
+            <div class="global-settings-grid">
+                <div>
+                    <label>1) Global Discount (%):</label>
+                    <input type="number" id="global-discount" min="0" max="100" placeholder="e.g., 20">
+                    <small class="small">Set 0 to disable.</small>
+
+                    <label>2) Global Delivery Charge (৳):</label>
+                    <input type="number" id="global-delivery" min="0" placeholder="e.g., 80">
+
+                    <label>3) Global Note (shown sitewide):</label>
+                    <input type="text" id="global-note-input" placeholder="e.g., আজকের অর্ডার আগামীকাল ডেলিভারি হবে">
+                </div>
+                <div>
+                    <label>4) Global Tag (comma separated):</label>
+                    <input type="text" id="global-tags" placeholder="e.g., COD Available, Best Seller">
+
+                    <label>5) Global Badge Text:</label>
+                    <input type="text" id="global-badge" placeholder="e.g., HOT, NEW, SALE">
+
+                    <label>6) Header Banner Text (empty to hide):</label>
+                    <input type="text" id="global-banner-input" placeholder="e.g., 50% OFF Today!">
+                </div>
+            </div>
+            <div style="margin-top:12px;">
+                <button onclick="saveGlobalSettings()">Save Global Settings</button>
+                <button class="cancel-btn" onclick="resetGlobalSettings()" style="margin-left:8px;">Reset</button>
+            </div>
+            <p class="small" style="margin-top:10px;">Notes: Settings are stored in localStorage and will apply automatically when rendering products (new uploads included).</p>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="this.parentElement.parentElement.style.display='none'">&times;</span>
+            <h2>Login</h2>
+            <form id="login-form">
+                <label>Email:</label><input type="email" id="login-email" required>
+                <label>Password:</label><input type="password" id="login-password" required>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="edit-product-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="this.parentElement.parentElement.style.display='none'">&times;</span>
+            <h2>Edit Product</h2>
+            <form id="edit-product-form"></form>
+        </div>
+    </div>
+
+    <div id="order-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="this.parentElement.parentElement.style.display='none'">&times;</span>
+            <h2>Order: <span id="order-product-name"></span></h2>
+            <form id="order-form"></form>
+        </div>
+    </div>
+
+    <div id="toast-notification"></div>
+
+    <script>
+        // --- Data & Storage ---
+        let allProducts = [], allAdmins = [], allOrders = [];
+        let loggedInUser = null;
+        const STORAGE_KEY = 'smp_data_v2';
+        const GLOBAL_KEY = 'smp_global_settings_v1';
+
+        const defaultGlobalSettings = {
+            discountPercent: 0,
+            deliveryCharge: 0,
+            note: '',
+            tags: [],
+            badgeText: '',
+            bannerText: ''
+        };
+
+        const saveData = () => localStorage.setItem(STORAGE_KEY, JSON.stringify({ allProducts, allAdmins, allOrders }));
+        const loadData = () => {
+            const d = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+            if (d) { allProducts = d.allProducts || []; allAdmins = d.allAdmins || []; allOrders = d.allOrders || []; }
+        };
+
+        // Global settings functions
+        const loadGlobalSettings = () => {
+            const raw = localStorage.getItem(GLOBAL_KEY);
+            if (!raw) return {...defaultGlobalSettings};
+            try { const parsed = JSON.parse(raw); return {...defaultGlobalSettings, ...parsed}; } catch { return {...defaultGlobalSettings}; }
+        };
+        const saveGlobalSettingsToStorage = (obj) => {
+            localStorage.setItem(GLOBAL_KEY, JSON.stringify(obj));
+            applyGlobalSettingsUI();
+            renderAll();
+            showToast("Global settings saved.");
+        };
+        const resetGlobalSettings = () => {
+            if(!confirm("Reset global settings to defaults?")) return;
+            localStorage.removeItem(GLOBAL_KEY);
+            applyGlobalSettingsUI();
+            renderAll();
+            showToast("Global settings reset.");
+        };
+
+        function applyGlobalSettingsUI() {
+            const g = loadGlobalSettings();
+            document.getElementById('global-discount').value = g.discountPercent || '';
+            document.getElementById('global-delivery').value = g.deliveryCharge || '';
+            document.getElementById('global-note-input').value = g.note || '';
+            document.getElementById('global-tags').value = (g.tags || []).join(', ');
+            document.getElementById('global-badge').value = g.badgeText || '';
+            document.getElementById('global-banner-input').value = g.bannerText || '';
+
+            // show banner and note
+            const bannerEl = document.getElementById('global-banner');
+            if (g.bannerText && g.bannerText.trim().length > 0) {
+                bannerEl.textContent = g.bannerText;
+                bannerEl.classList.remove('hidden');
+            } else {
+                bannerEl.classList.add('hidden');
+            }
+            document.getElementById('global-note').textContent = g.note || '';
+        }
+
+        function saveGlobalSettings() {
+            const g = {
+                discountPercent: parseFloat(document.getElementById('global-discount').value || 0),
+                deliveryCharge: parseFloat(document.getElementById('global-delivery').value || 0),
+                note: document.getElementById('global-note-input').value || '',
+                tags: document.getElementById('global-tags').value.split(',').map(s=>s.trim()).filter(Boolean),
+                badgeText: (document.getElementById('global-badge').value || '').trim(),
+                bannerText: (document.getElementById('global-banner-input').value || '').trim()
+            };
+            saveGlobalSettingsToStorage(g);
+        }
+
+        // Apply now (mutate products if user wants permanent fields like tags)
+        function applySettingsNow() {
+            if (!confirm("Apply current global settings now to existing products? This will add global tags permanently to product metadata.")) return;
+            const g = loadGlobalSettings();
+            if (g.tags && g.tags.length > 0) {
+                allProducts = allProducts.map(p => {
+                    const currentTags = (p.tags || []).slice();
+                    g.tags.forEach(t => { if (!currentTags.includes(t)) currentTags.push(t); });
+                    return {...p, tags: currentTags};
+                });
+            }
+            saveData();
+            renderAll();
+            showToast("Applied global settings to existing products.");
+        }
+
+        // --- Rendering ---
+        function formatPrice(n) { return new Intl.NumberFormat('en-IN').format(n.toFixed(0)); }
+
+        function renderAll() { renderProducts(); if (loggedInUser) { renderManageList(); renderOrders(); } }
+
+        function applySettingsToProductDisplay(p) {
+            const g = loadGlobalSettings();
+            const basePrice = parseFloat(p.price || 0);
+            let discounted = basePrice;
+            if (g.discountPercent && g.discountPercent > 0) {
+                discounted = basePrice * (1 - (g.discountPercent/100));
+            }
+            return {
+                displayPrice: discounted,
+                basePrice,
+                deliveryCharge: g.deliveryCharge || 0,
+                badgeText: g.badgeText || '',
+                tags: Array.from(new Set([...(p.tags||[]), ...(g.tags||[])]))
+            };
+        }
+
+        function renderProducts(productsToRender=allProducts) {
+            const newGallery = document.getElementById('new-product-gallery'), allGallery = document.getElementById('all-product-gallery');
+            newGallery.innerHTML=''; allGallery.innerHTML='';
+            const sevenDaysInMs = 7*24*60*60*1000, now = Date.now();
+            productsToRender.forEach(p => {
+                const s = applySettingsToProductDisplay(p);
+                const priceHtml = (s.displayPrice !== s.basePrice)
+                    ? `<p class="small">Original: ৳${formatPrice(s.basePrice)}</p><p class="price">Now: ৳${formatPrice(s.displayPrice)}</p>`
+                    : `<p class="price">Price: ৳${formatPrice(s.displayPrice)}</p>`;
+                const tagsHtml = (s.tags && s.tags.length>0) ? `<p class="small">Tags: ${s.tags.join(', ')}</p>` : '';
+                const badgeHtml = s.badgeText ? `<div class="badge">${s.badgeText}</div>` : '';
+                const cardHTML = `<div class="product-card" data-id="${p.id}">
+                    ${badgeHtml}
+                    <div><img src="${p.imageData}" alt="${p.name}"><h3>${p.name}</h3>
+                    ${priceHtml}
+                    <p>Size: ${p.size}</p>
+                    ${tagsHtml}
+                    </div>
+                    <button onclick="openOrderModal('${p.id}')">Order Now</button>
+                </div>`;
+                now - p.uploadTimestamp < sevenDaysInMs ? newGallery.innerHTML+=cardHTML : allGallery.innerHTML+=cardHTML;
+            });
+            applyGlobalSettingsUI(); // update banner/note
+        }
+
+        function renderManageList() {
+            const list = document.getElementById('manage-products-list'); list.innerHTML='';
+            allProducts.forEach(p => {
+                if (loggedInUser && (loggedInUser.role === 'superadmin' || loggedInUser.id === p.ownerId)) {
+                    list.innerHTML += `<div class="manage-item"><span>${p.name}<br><small style="color:#aaa;">${p.id}</small></span><div><button onclick="openEditModal('${p.id}')" style="margin-right:10px;padding:8px 15px;">Edit</button><button onclick="deleteProduct('${p.id}')" class="cancel-btn" style="padding:8px 15px;">Delete</button></div></div>`;
+                }
+            });
+        }
+
+        function renderOrders() {
+            const pendingList = document.getElementById('pending-orders-list'), completedList = document.getElementById('completed-orders-list');
+            pendingList.innerHTML=''; completedList.innerHTML='';
+            let pCount=0, cCount=0;
+            allOrders.forEach(o => {
+                const itemHTML = `<li class="order-item"><p><strong>Product:</strong> ${o.productName} (x${o.quantity})</p><p><strong>Size:</strong> ${o.size}</p><p><strong>Customer:</strong> ${o.customerName}</p><p><strong>WhatsApp:</strong> ${o.whatsapp}</p><div class="order-actions" style="margin-top:10px;">${o.status === 'pending' ? `<button onclick="confirmOrder('${o.id}')">Confirm</button><button class="cancel-btn" onclick="cancelOrder('${o.id}')" style="margin-left:10px;">Cancel</button>` : `<p style="color:var(--price-color)">Delivery Successful</p>`}</div></li>`;
+                if (o.status === 'pending') { pendingList.innerHTML += itemHTML; pCount++; } else { completedList.innerHTML += itemHTML; cCount++; }
+            });
+            document.getElementById('pending-count').textContent = pCount;
+            document.getElementById('completed-count').textContent = cCount;
+        }
+
+        // --- Tabs & UI ---
+        function openTab(evt, tabName) {
+            document.querySelectorAll('.admin-tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value, pass = document.getElementById('login-password').value;
+            const user = allAdmins.find(admin => admin.id === email && admin.password === pass);
+            if (user) { loggedInUser = user; document.getElementById('login-modal').style.display='none'; document.getElementById('admin-panel').style.display='block'; updateAdminView(); } else { alert("Invalid email or password."); }
+        });
+
+        function logout() { loggedInUser = null; document.getElementById('admin-panel').style.display = 'none'; document.getElementById('settings-btn').classList.remove('hidden'); document.getElementById('logout-btn').classList.add('hidden'); renderAll(); }
+
+        function updateAdminView() {
+            if (!loggedInUser) return;
+            document.getElementById('settings-btn').classList.add('hidden');
+            document.getElementById('logout-btn').classList.remove('hidden');
+            document.querySelectorAll('.super-admin-only').forEach(el => el.classList.toggle('hidden', loggedInUser.role !== 'superadmin'));
+            // click first admin tab
+            const firstTab = document.querySelectorAll('.admin-tab')[0];
+            if (firstTab) firstTab.click();
+            if (loggedInUser.role === 'superadmin') renderAdminManagement();
+            renderOrders();
+        }
+
+        document.getElementById('add-admin-form').innerHTML = `<label>New Admin Email:</label><input type="email" id="new-admin-email" required><label>Password:</label><input type="password" id="new-admin-pass" required><button type="submit">Add Admin</button>`;
+        document.getElementById('add-admin-form').addEventListener('submit', e => {
+            e.preventDefault();
+            const email = document.getElementById('new-admin-email').value;
+            if (allAdmins.find(a=>a.id===email)) return alert("Admin exists.");
+            const newAdmin = { id: email, password: document.getElementById('new-admin-pass').value, role: 'admin', adminCode: 'A' + (allAdmins.length) };
+            allAdmins.push(newAdmin);
+            saveData(); renderAdminManagement(); e.target.reset();
+        });
+
+        function renderAdminManagement() {
+            const adminList = document.getElementById('admin-list'); adminList.innerHTML = '';
+            allAdmins.forEach(admin => {
+                if (admin.role !== 'superadmin') {
+                    adminList.innerHTML += `<li class="admin-list-item"><span>${admin.id} (Code: ${admin.adminCode})</span><button onclick="deleteAdmin('${admin.id}')" class="cancel-btn" style="padding:5px 10px;">Delete</button></li>`;
+                }
+            });
+        }
+
+        const deleteAdmin = adminId => { if (confirm(`Delete admin: ${adminId}?`)) { allAdmins = allAdmins.filter(a=>a.id !== adminId); saveData(); renderAdminManagement(); } };
+
+        // Upload form
+        document.getElementById('upload-form').innerHTML = `<label>Product Name:</label><input type="text" id="product-name" required><label>Price (৳):</label><input type="number" id="product-price" required><label>Sizes (e.g., M, L, XL):</label><input type="text" id="product-size" required><label>Stock:</label><input type="number" id="product-stock" required><label>Image:</label><input type="file" id="product-image" accept="image/*" required><button type="submit">Upload Product</button>`;
+        document.getElementById('upload-form').addEventListener('submit', e => {
+            e.preventDefault();
+            const imageFile = document.getElementById('product-image').files[0];
+            if (!imageFile || !loggedInUser) return alert("Please login as admin and choose image.");
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const newProduct = {
+                    id: `SMP-${loggedInUser.adminCode}-${Date.now()}`,
+                    ownerId: loggedInUser.id,
+                    name: document.getElementById('product-name').value,
+                    price: parseFloat(document.getElementById('product-price').value),
+                    size: document.getElementById('product-size').value,
+                    stock: parseInt(document.getElementById('product-stock').value),
+                    imageData: reader.result,
+                    uploadTimestamp: Date.now(),
+                    tags: []
+                };
+                allProducts.unshift(newProduct);
+                saveData(); renderAll(); e.target.reset(); alert(`Product "${newProduct.name}" uploaded.`);
+            };
+            reader.readAsDataURL(imageFile);
+        });
+
+        function openEditModal(productId) {
+            const product = allProducts.find(p => p.id === productId); if (!product) return;
+            document.getElementById('edit-product-form').innerHTML = `<input type="hidden" id="edit-product-id" value="${product.id}"><label>Name:</label><input type="text" id="edit-product-name" value="${product.name}" required><label>Price:</label><input type="number" id="edit-product-price" value="${product.price}" required><label>Sizes:</label><input type="text" id="edit-product-size" value="${product.size}" required><label>Stock:</label><input type="number" id="edit-product-stock" value="${product.stock}" required><label>Change Image (optional):</label><input type="file" id="edit-product-image" accept="image/*"><button type="submit">Save Changes</button>`;
+            document.getElementById('edit-product-modal').style.display = 'flex';
+        }
+
+        document.getElementById('edit-product-form').addEventListener('submit', e => {
+            e.preventDefault();
+            const productId = document.getElementById('edit-product-id').value; const product = allProducts.find(p=>p.id===productId);
+            if (!product) return;
+            const imageFile = document.getElementById('edit-product-image').files[0];
+            const updateData = () => {
+                product.name = document.getElementById('edit-product-name').value;
+                product.price = parseFloat(document.getElementById('edit-product-price').value);
+                product.size = document.getElementById('edit-product-size').value;
+                product.stock = parseInt(document.getElementById('edit-product-stock').value);
+                saveData(); renderAll(); document.getElementById('edit-product-modal').style.display = 'none'; alert("Product updated!");
+            };
+            if (imageFile) { const reader = new FileReader(); reader.onloadend = () => { product.imageData = reader.result; updateData(); }; reader.readAsDataURL(imageFile); } else { updateData(); }
+        });
+
+        const deleteProduct = productId => { if (confirm("Delete this product?")) { allProducts = allProducts.filter(p=>p.id !== productId); saveData(); renderAll(); } };
+
+        function openOrderModal(productId) {
+            const product = allProducts.find(p => p.id === productId); if (!product) return;
+            document.getElementById('order-product-name').textContent = product.name;
+            document.getElementById('order-form').dataset.productId = productId;
+            const sizeSelect = document.getElementById('order-size-select'); sizeSelect.innerHTML = '';
+            const sizes = product.size.split(',').map(s=>s.trim());
+            sizes.forEach(size => { if (size) sizeSelect.innerHTML += `<option value="${size}">${size}</option>`; });
+            document.getElementById('order-modal').style.display='flex';
+        }
+
+        document.getElementById('order-form').innerHTML = `<label>Your Name:</label><input type="text" id="customer-name" required><label>Select Size:</label><select id="order-size-select" required></select><label>Quantity:</label><input type="number" id="quantity" min="1" required><label>Location:</label><textarea id="location" rows="3" required></textarea><label>WhatsApp:</label><input type="tel" id="customer-whatsapp" required><button type="submit">Confirm Order</button>`;
+
+        document.getElementById('order-form').addEventListener('submit', e => {
+            e.preventDefault();
+            const pId = e.target.dataset.productId, p = allProducts.find(prod=>prod.id === pId), qty = parseInt(document.getElementById('quantity').value);
+            if (p && p.stock >= qty) {
+                p.stock -= qty;
+                const g = loadGlobalSettings();
+                const delivery = g.deliveryCharge || 0;
+                allOrders.unshift({
+                    id: `ORD-${Date.now()}`,
+                    productId: p.id,
+                    productName: p.name,
+                    quantity: qty,
+                    size: document.getElementById('order-size-select').value,
+                    customerName: document.getElementById('customer-name').value,
+                    location: document.getElementById('location').value,
+                    whatsapp: document.getElementById('customer-whatsapp').value,
+                    status: 'pending',
+                    appliedDeliveryCharge: delivery
+                });
+                saveData(); renderAll(); document.getElementById('order-modal').style.display = 'none'; e.target.reset();
+                showToast("আপনার নাম্বারটিতে অর্ডার কল দেওয়া হবে। রিসিভ করে অর্ডার কনফার্ম করুন।");
+            } else { alert('Sorry, not enough stock.'); }
+        });
+
+        function confirmOrder(orderId) { const o = allOrders.find(ord => ord.id === orderId); if (o) { o.status = 'completed'; saveData(); renderOrders(); } }
+        function cancelOrder(orderId) { if (!confirm("Are you sure?")) return; const oIndex = allOrders.findIndex(o => o.id === orderId); if (oIndex > -1) { const o = allOrders[oIndex]; const p = allProducts.find(prod => prod.id === o.productId); if (p) p.stock += o.quantity; allOrders.splice(oIndex, 1); saveData(); renderAll(); } }
+
+        function showToast(message) { const toast = document.getElementById('toast-notification'); toast.textContent = message; toast.classList.add('show'); setTimeout(() => { toast.classList.remove('show'); }, 6000); }
+
+        document.getElementById('settings-btn').addEventListener('click', () => document.getElementById('login-modal').style.display='flex');
+        document.getElementById('logout-btn').addEventListener('click', logout);
+
+        // Initialization
+        function initialize() {
+            loadData();
+            if (allAdmins.length === 0) {
+                allAdmins.push({ id: 'snvnafiz@gmail.com', password: 'snvsmp', role: 'superadmin', adminCode: 'S1' });
+                saveData();
+                alert('Welcome! Super Admin created.\nEmail: snvnafiz@gmail.com\nPass: snvsmp\nPlease log in.');
+            }
+            applyGlobalSettingsUI();
+            renderAll();
+        }
+        document.addEventListener('DOMContentLoaded', initialize);
+    </script>
+</body>
+</html>
