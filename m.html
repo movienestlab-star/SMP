@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SMP Premium Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- DJ LIGHT / NEON THEME --- */
+        :root {
+            --bg: #f0f2f5; --text: #111;
+            --card: #ffffff; --border: #ddd;
+            --primary: #ff6600; --glow: rgba(255, 102, 0, 0.4);
+            --shadow: 5px 5px 10px #d1d1d1, -5px -5px 10px #ffffff;
+        }
+        [data-theme="dark"] {
+            --bg: #0a0a0a; --text: #fff;
+            --card: #151515; --border: #333;
+            --primary: #00e5ff; /* Cyan Neon */
+            --glow: rgba(0, 229, 255, 0.6);
+            --shadow: 0 0 15px rgba(0, 229, 255, 0.15);
+        }
+
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; padding-bottom: 80px; background: var(--bg); color: var(--text); transition: 0.3s; }
+
+        /* HEADER */
+        header { 
+            position: sticky; top: 0; background: var(--bg); z-index: 1000;
+            padding: 15px 20px; border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        .logo { font-size: 24px; font-weight: 900; letter-spacing: -1px; text-decoration: none; color: var(--text); }
+        .logo span { color: var(--primary); text-shadow: 0 0 10px var(--glow); }
+        
+        /* User Profile in Header */
+        .header-pic {
+            width: 35px; height: 35px; border-radius: 50%; object-fit: cover;
+            border: 2px solid var(--primary); display: none; cursor: pointer;
+            box-shadow: 0 0 10px var(--glow);
+        }
+        .btn-mini { 
+            padding: 6px 15px; border-radius: 20px; font-size: 11px; border: 1px solid var(--primary); 
+            background: transparent; color: var(--text); font-weight: bold; cursor: pointer;
+            box-shadow: var(--shadow);
+        }
+
+        /* HERO AREA */
+        .hero {
+            margin: 20px; padding: 25px; background: var(--card); border-radius: 20px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: var(--shadow); border: 1px solid var(--border); position: relative; overflow:hidden;
+        }
+        .hero::before {
+            content:''; position:absolute; top:-50%; left:-50%; width:200%; height:200%;
+            background: linear-gradient(45deg, transparent, var(--glow), transparent);
+            animation: shine 6s infinite linear; opacity: 0.2; pointer-events: none;
+        }
+        @keyframes shine { 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
+        .mascot { width: 85px; filter: drop-shadow(0 0 10px var(--glow)); animation: float 3s infinite ease-in-out; }
+        @keyframes float { 0%,100%{transform: translateY(0);} 50%{transform: translateY(-10px);} }
+
+        /* INPUTS */
+        .g-search {
+            width: 100%; padding: 15px 20px; border-radius: 50px; border: 2px solid var(--border);
+            background: var(--card); color: var(--text); font-size: 14px; outline: none;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05); transition: 0.3s;
+        }
+        .g-search:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--glow); }
+        .search-wrap { padding: 0 20px 20px; }
+
+        /* CARD GRID */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; padding: 0 20px; }
+        .card { 
+            background: var(--card); border-radius: 15px; overflow: hidden; cursor: pointer; 
+            border: 1px solid var(--border); transition: transform 0.2s; position: relative;
+            box-shadow: var(--shadow);
+        }
+        .admin-tag { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: #fff; font-size: 9px; padding: 3px 8px; border-radius: 12px; backdrop-filter: blur(4px); }
+        .stock-tag { position: absolute; top: 10px; right: 10px; background: var(--primary); color: #000; font-weight:bold; font-size: 9px; padding: 3px 8px; border-radius: 12px; box-shadow: 0 0 10px var(--glow); }
+        
+        .card img { width: 100%; height: 180px; object-fit: cover; }
+        .p-info { padding: 15px; }
+        .p-title { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .p-price { font-size: 17px; font-weight: 900; color: var(--primary); margin-top: 5px; display: block; text-shadow: 0 0 8px var(--glow); }
+        
+        /* FORMS */
+        .g-input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font-size: 14px; outline: none; margin-bottom: 15px; }
+        .g-label { font-size: 12px; color: #777; font-weight: 600; margin-bottom: 5px; display: block; }
+        
+        .btn-main { width: 100%; padding: 14px; background: var(--primary); color: #000; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; font-size: 15px; box-shadow: 0 0 15px var(--glow); transition: 0.2s; }
+        .btn-main:active { transform: scale(0.98); box-shadow: none; }
+
+        /* PROFILE UPLAOD STYLE */
+        .pic-upload-box {
+            width: 90px; height: 90px; border-radius: 50%; background: var(--bg);
+            border: 2px dashed var(--primary); margin: 0 auto 20px;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; overflow: hidden; position: relative;
+        }
+        .pic-upload-box img { width: 100%; height: 100%; object-fit: cover; }
+        .pic-icon { position: absolute; font-size: 20px; color: var(--text); pointer-events: none; }
+
+        /* SIZE BUTTONS */
+        .size-container { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; }
+        .size-btn { padding: 8px 12px; border: 1px solid var(--border); background: var(--bg); color: var(--text); border-radius: 6px; cursor: pointer; font-size: 12px; transition: 0.2s; }
+        .size-btn.selected { background: var(--primary); color: #000; border-color: var(--primary); box-shadow: 0 0 10px var(--glow); font-weight: bold; }
+
+        /* MODALS */
+        .page-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 5000; overflow-y: auto; display: none; padding: 20px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 6000; align-items: center; justify-content: center; }
+        .modal-box { width: 95%; max-width: 420px; background: var(--card); padding: 25px; border-radius: 15px; position: relative; border: 1px solid var(--primary); box-shadow: 0 0 30px var(--glow); max-height: 90vh; overflow-y: auto; }
+        .cx { position: absolute; top: 15px; right: 15px; font-size: 24px; cursor: pointer; color: var(--text); }
+
+        /* NAV */
+        .nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--card); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); }
+        .nav-item { text-align: center; color: #777; font-size: 10px; cursor: pointer; }
+        .nav-item.active { color: var(--primary); font-weight: bold; text-shadow: 0 0 8px var(--glow); }
+        .nav-item i { font-size: 22px; margin-bottom: 4px; display: block; }
+
+        /* FLOATING THEME BTN */
+        .float-theme { position: fixed; bottom: 90px; right: 20px; width: 50px; height: 50px; background: var(--primary); color: #000; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; cursor: pointer; z-index: 4000; box-shadow: 0 0 20px var(--glow); }
+        
+        /* ADMIN ROW */
+        .admin-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border); font-size: 13px; }
+        .del-btn { background: #ff3333; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+
+    </style>
+</head>
+<body data-theme="light">
+
+    <div class="float-theme" onclick="toggleTheme()"><i class="fas fa-moon" id="t-icon"></i></div>
+
+    <!-- ===== HOME ===== -->
+    <div id="view-home">
+        <header>
+            <a href="#" class="logo">SMP<span>Store</span></a>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                 <button class="btn-mini" onclick="toggleLang()" id="btn-lang">বাংলা</button>
+                 <!-- LOGIN button will hide, Profile Pic will show if logged in -->
+                 <button class="btn-mini" style="background:var(--primary); color:#000; border:none;" onclick="checkAdmin()" id="btn-login-main">Login</button>
+                 <img src="" class="header-pic" id="header-profile-pic" onclick="checkAdmin()">
+            </div>
+        </header>
+
+        <div class="hero">
+            <div>
+                <h2 class="trn" key="welcome">Welcome to SMP</h2>
+                <p class="trn" key="sub" style="font-size:12px; opacity:0.8;">Premium Wholesale Market</p>
+            </div>
+            <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" class="mascot">
+        </div>
+
+        <div class="search-wrap">
+             <input type="text" class="g-search trn-ph" key="ph_search" id="search-input" placeholder="🔍 Search Products..." onkeyup="doSearch()">
+        </div>
+
+        <div id="product-list" class="grid">
+            <p style="text-align:center; padding:20px; width:100%;">Connecting...</p>
+        </div>
+    </div>
+
+    <!-- ===== ORDER MODAL (BUTTON SIZES) ===== -->
+    <div id="modal-order" class="modal">
+        <div class="modal-box">
+            <span class="cx" onclick="document.getElementById('modal-order').style.display='none'">&times;</span>
+            <h3 class="trn" style="color:var(--primary);" key="confirm">Confirm Order</h3>
+            <p id="ord-pd-title" style="font-weight:bold; margin-bottom:15px; font-size:14px;"></p>
+            
+            <form onsubmit="placeOrder(event)">
+                <input type="hidden" id="ord-pid">
+                <input type="hidden" id="ord-selected-size">
+
+                <label class="g-label">Your Name</label>
+                <input type="text" id="c-name" class="g-input" required>
+                
+                <label class="g-label">WhatsApp Number</label>
+                <input type="tel" id="c-phone" class="g-input" required>
+                
+                <!-- SIZE BUTTON CONTAINER -->
+                <label class="g-label trn" key="size_c">Select Size</label>
+                <div id="size-options-container" class="size-container"></div>
+                
+                <!-- 64 DISTRICTS -->
+                <div style="display:flex; gap:10px;">
+                    <div style="flex:1;">
+                       <label class="g-label">Division</label>
+                       <select id="c-div" class="g-input" onchange="ldDist()" style="padding:10px;" required><option value="">Select</option></select>
+                    </div>
+                    <div style="flex:1;">
+                       <label class="g-label">District</label>
+                       <select id="c-dist" class="g-input" style="padding:10px;" required><option value="">Select</option></select>
+                    </div>
+                </div>
+
+                <label class="g-label">Detailed Address</label>
+                <textarea id="c-addr" class="g-input" rows="2" placeholder="House / Road / Village" required></textarea>
+
+                <button type="submit" class="btn-main trn" key="place_btn">CONFIRM ORDER</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== AUTH VIEW (PHOTO UPLOAD) ===== -->
+    <div id="view-auth" class="page-overlay">
+        <i class="fas fa-arrow-left" onclick="hideAuth()" style="font-size:24px; cursor:pointer; margin-bottom:20px;"></i>
+        <div style="max-width: 400px; margin: 40px auto; text-align: center;">
+            <h2 id="auth-header" style="color:var(--primary); text-shadow:0 0 10px var(--glow);">MERCHANT LOGIN</h2>
+            <br>
+            <form onsubmit="handleAuth(event)">
+                
+                <!-- NEW: PROFILE PHOTO UPLOAD SECTION -->
+                <div id="reg-fields" style="display:none;">
+                    <div class="pic-upload-box" onclick="document.getElementById('reg-pic').click()">
+                        <img id="reg-preview" src="https://cdn-icons-png.flaticon.com/512/847/847969.png">
+                        <input type="file" id="reg-pic" style="display:none;" accept="image/*" onchange="prevUserImg(this)">
+                        <i class="fas fa-camera pic-icon" style="color:rgba(0,0,0,0.5);"></i>
+                    </div>
+                    <p style="font-size:11px; margin-top:-15px; margin-bottom:15px; color:var(--text);">Tap circle to upload photo</p>
+
+                    <input type="text" id="reg-name" class="g-input" placeholder="Full Name">
+                </div>
+
+                <input type="email" id="auth-u" class="g-input" placeholder="Email Address" required>
+                <input type="password" id="auth-p" class="g-input" placeholder="Password" required>
+                <button type="submit" class="btn-main" id="btn-auth-act">LOGIN</button>
+            </form>
+            <p style="margin-top:20px; color:var(--text); cursor:pointer; font-size:13px;" onclick="toggleAuthMode()" id="auth-toggle-txt">Create New Account</p>
+        </div>
+    </div>
+
+    <!-- ===== ADMIN DASHBOARD ===== -->
+    <div id="view-admin" class="page-overlay" style="background:var(--bg);">
+        <div style="max-width:800px; margin:0 auto;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:10px;">
+                <h3>Dashboard</h3>
+                <div>
+                    <button class="btn-mini" onclick="exitAdmin()">Shop</button>
+                    <button class="btn-mini" style="background:var(--red); border-color:var(--red); color:#fff;" onclick="doLogout()">Logout</button>
+                </div>
+            </div>
+
+            <!-- MASTER TOOLS -->
+            <div id="master-panel" style="border:2px dashed var(--primary); padding:15px; border-radius:12px; margin-bottom:20px; display:none;">
+                <h4 style="margin:0 0 10px 0;">Manage Admins</h4>
+                <div style="display:flex; gap:10px;">
+                    <input type="email" id="new-adm-mail" class="g-input" placeholder="User Email" style="margin:0;">
+                    <button onclick="addAdmin()" class="btn-main" style="width:auto; margin:0; padding:10px 20px;">Add</button>
+                </div>
+                <div id="admin-list-ui" style="margin-top:10px;"></div>
+            </div>
+
+            <!-- UPLOAD PRODUCT -->
+            <div style="background:var(--card); padding:20px; border-radius:12px; box-shadow:var(--shadow); margin-bottom:20px;">
+                <h4><i class="fas fa-box-open"></i> Upload Product</h4>
+                <form onsubmit="doUpload(event)">
+                    <input type="text" id="p-nm" class="g-input" placeholder="Product Name" required>
+                    <div style="display:flex; gap:10px;">
+                        <input type="number" id="p-pr" class="g-input" placeholder="Price (TK)" required>
+                        <input type="number" id="p-stk" class="g-input" placeholder="Stock Qty" required>
+                    </div>
+                    <label class="g-label">Available Sizes (Comma Separated)</label>
+                    <input type="text" id="p-sz" class="g-input" placeholder="e.g. M, L, XL, XXL" required>
+                    
+                    <label class="g-label">Product Image</label>
+                    <input type="file" id="p-im" accept="image/*" class="g-input">
+                    <button type="submit" class="btn-main" id="btn-pub">PUBLISH PRODUCT</button>
+                </form>
+            </div>
+
+            <h4>Recent Orders</h4>
+            <div id="admin-orders"></div>
+
+            <h4 style="margin-top:20px;">My Inventory</h4>
+            <div id="admin-prods" class="grid" style="grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); padding:0;"></div>
+        </div>
+    </div>
+
+    <!-- MOBILE NAVIGATION -->
+    <div class="nav">
+        <div class="nav-item active" onclick="goHome()"><i class="fas fa-home"></i> Home</div>
+        <div class="nav-item" onclick="checkAdmin()"><i class="fas fa-user-tie"></i> <span id="nav-login-txt">Login</span></div>
+    </div>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getDatabase, ref, set, push, onValue, remove, update, get, child } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+        // CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyC7caxVfeOoVKkDUSBYRlWhftXErD1s8yM",
+            authDomain: "smp-market-store.firebaseapp.com",
+            databaseURL: "https://smp-market-store-default-rtdb.firebaseio.com",
+            projectId: "smp-market-store",
+            storageBucket: "smp-market-store.firebasestorage.app",
+            messagingSenderId: "128459800074",
+            appId: "1:128459800074:web:02f3376a87b8ac6912a9f3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        const MASTER = "snvnafiz@gmail.com";
+        let curUser = null;
+        let products = [];
+        let isBn = false;
+
+        // AUTH & PROFILE PIC LISTENER
+        onAuthStateChanged(auth, (user) => {
+            curUser = user;
+            if(user) {
+                document.getElementById('nav-login-txt').innerText = "Panel";
+                document.getElementById('btn-login-main').style.display = "none";
+                const profileImg = document.getElementById('header-profile-pic');
+                profileImg.style.display = "block";
+                // Show uploaded photo or default
+                profileImg.src = user.photoURL || "https://cdn-icons-png.flaticon.com/512/847/847969.png";
+                
+                hideAuth();
+            } else {
+                document.getElementById('nav-login-txt').innerText = "Login";
+                document.getElementById('btn-login-main').style.display = "block";
+                document.getElementById('header-profile-pic').style.display = "none";
+            }
+        });
+
+        // 1. READ PRODUCTS & RENDER (GRID)
+        onValue(ref(db, 'products'), (s) => {
+            products = [];
+            let d = s.val();
+            if(d) Object.keys(d).forEach(k => products.push({id:k, ...d[k]}));
+            products.reverse();
+            renderP(products);
+        });
+
+        function renderP(list) {
+            let ui = document.getElementById('product-list');
+            let adm = document.getElementById('admin-prods');
+            let h = "", ha = "";
+            
+            list.forEach(p => {
+                let adminInfo = p.by === MASTER ? "Owner" : (p.by ? p.by.split('@')[0] : 'Admin');
+                
+                h += `<div class="card" onclick="openOrderWin('${p.id}')">
+                    <div class="admin-tag">${adminInfo}</div>
+                    <div class="stock-tag">Stock: ${p.stk}</div>
+                    <img src="${p.img}">
+                    <div class="p-info">
+                        <div class="p-title">${p.nm}</div>
+                        <span class="p-price">৳${p.pr}</span>
+                    </div>
+                </div>`;
+                
+                if(curUser) {
+                    ha += `<div style="background:var(--card); padding:5px; border-radius:8px; border:1px solid #ddd;">
+                        <img src="${p.img}" style="width:100%; height:80px; object-fit:cover; border-radius:5px;">
+                        <div style="font-size:11px;">
+                           <b>${p.nm}</b><br>Stock: ${p.stk}<br>
+                           <button onclick="delP('${p.id}')" class="del-btn" style="margin-top:5px; width:100%;">Delete</button>
+                        </div>
+                    </div>`;
+                }
+            });
+            ui.innerHTML = h || "<p style='text-align:center;width:100%;padding:20px;'>Inventory Empty</p>";
+            if(adm) adm.innerHTML = ha;
+        }
+
+        // 2. UPLOAD (STOCK, SIZES, NO SPINNER)
+        window.doUpload = (e) => {
+            e.preventDefault();
+            let b = document.getElementById('btn-pub'); b.innerText="Uploading..."; b.disabled=true;
+            
+            let f = document.getElementById('p-im').files[0];
+            if(!f) { alert("Photo Required!"); b.disabled=false; return; }
+
+            let r = new FileReader(); r.readAsDataURL(f);
+            r.onload = function() {
+                let im = new Image(); im.src = r.result;
+                im.onload = function(){
+                    let c=document.createElement('canvas'); let x=c.getContext('2d');
+                    let sc=400/im.width; c.width=400; c.height=im.height*sc;
+                    x.drawImage(im,0,0,c.width,c.height);
+                    
+                    push(ref(db, 'products'), {
+                        nm: document.getElementById('p-nm').value,
+                        pr: document.getElementById('p-pr').value,
+                        stk: document.getElementById('p-stk').value,
+                        sz: document.getElementById('p-sz').value.toUpperCase(),
+                        img: c.toDataURL('image/jpeg', 0.8),
+                        by: curUser.email, ts: Date.now()
+                    }).then(() => {
+                        alert("Product Live!");
+                        document.querySelector('#view-admin form').reset();
+                        b.innerText="PUBLISH PRODUCT"; b.disabled=false;
+                    });
+                }
+            }
+        }
+
+        // 3. AUTH (USER PHOTO UPLOAD + REGISTRATION)
+        let ls = false; 
+        window.toggleAuthMode = () => { ls=!ls; document.getElementById('reg-fields').style.display=ls?'block':'none'; document.getElementById('btn-auth-act').innerText=ls?'CREATE ACCOUNT':'LOGIN'; }
+        
+        window.prevUserImg = (el) => {
+            if(el.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => document.getElementById('reg-preview').src = e.target.result;
+                reader.readAsDataURL(el.files[0]);
+            }
+        }
+
+        window.handleAuth = async (e) => {
+            e.preventDefault();
+            let m=document.getElementById('auth-u').value, p=document.getElementById('auth-p').value;
+            let b=document.getElementById('btn-auth-act'); b.innerText = "Processing...";
+
+            try {
+                if(ls) {
+                    // REGISTER WITH PHOTO
+                    let name = document.getElementById('reg-name').value;
+                    let file = document.getElementById('reg-pic').files[0];
+                    let cred = await createUserWithEmailAndPassword(auth, m, p);
+                    
+                    // Convert Profile Pic map
+                    let photoUrl = "https://cdn-icons-png.flaticon.com/512/847/847969.png";
+                    if(file) {
+                        photoUrl = await imgToB64(file);
+                    }
+                    await updateProfile(cred.user, { displayName: name, photoURL: photoUrl });
+                    alert("Account Created! You are logged in.");
+                } else {
+                    await signInWithEmailAndPassword(auth, m, p);
+                }
+                hideAuth();
+            } catch(er) { alert(er.message); }
+            b.innerText = ls ? "CREATE ACCOUNT" : "LOGIN";
+        }
+
+        function imgToB64(file) {
+            return new Promise(r => {
+                let rd = new FileReader(); rd.readAsDataURL(file);
+                rd.onload = () => {
+                    let i = new Image(); i.src = rd.result;
+                    i.onload = () => {
+                        let c = document.createElement('canvas');
+                        let sc = 200/i.width; c.width=200; c.height=i.height*sc;
+                        c.getContext('2d').drawImage(i,0,0,c.width,c.height);
+                        r(c.toDataURL('image/jpeg', 0.8));
+                    }
+                }
+            });
+        }
+
+        // 4. ADMIN & ORDERS
+        window.checkAdmin = async () => {
+            if(!curUser) { showAuth(); return; }
+            let m = curUser.email === MASTER;
+            
+            if(!m) {
+                let k = curUser.email.replace(/\./g, '_');
+                let snap = await get(child(ref(db), 'whitela/'+k));
+                if(!snap.exists()) { alert("User: "+curUser.email); return; }
+            }
+            // Admin Panel UI
+            document.getElementById('view-home').style.display='none';
+            document.getElementById('view-admin').style.display='block';
+            
+            if(m) {
+                document.getElementById('master-panel').style.display='block';
+                onValue(ref(db,'whitela'), s=>{
+                    let d=s.val(), h="";
+                    if(d) Object.keys(d).forEach(k=> h+=`<div class="admin-row"><span>${d[k].em}</span><button class="del-btn" onclick="remA('${k}')">Remove</button></div>`);
+                    document.getElementById('admin-list-ui').innerHTML = h;
+                });
+            } else document.getElementById('master-panel').style.display='none';
+
+            onValue(ref(db,'orders'), s=>{
+                let d=s.val(), div = document.getElementById('admin-orders'); div.innerHTML="";
+                if(d) Object.keys(d).reverse().forEach(k => {
+                    let o=d[k];
+                    let col=o.st==='Pending'?'orange':'green';
+                    div.innerHTML += `<div style="background:var(--card); padding:10px; margin-bottom:10px; border-left:4px solid ${col}; box-shadow:var(--shadow);">
+                        <b>${o.item} [Size: ${o.sz}]</b><br>${o.addr}<br>${o.nm}, ${o.ph}<br>
+                        <button onclick="tgSt('${k}','${o.st}')" style="margin-top:5px; background:var(--text); color:var(--bg); border:none; border-radius:4px; padding:3px 8px;">${o.st}</button>
+                    </div>`;
+                });
+            });
+        }
+
+        window.addAdmin = () => { let v=document.getElementById('new-adm-mail').value; if(v) set(ref(db,'whitela/'+v.replace(/\./g,'_')), {em:v}); document.getElementById('new-adm-mail').value=""; }
+        window.remA = (k) => remove(ref(db,'whitela/'+k));
+        window.delP = (id) => {if(confirm("Delete item?")) remove(ref(db,'products/'+id));}
+        window.tgSt = (k,s) => update(ref(db,'orders/'+k), {st: s==='Pending'?'Confirmed':'Pending'});
+
+        // 5. ORDER MODAL & SIZE BUTTONS
+        const bd = { 
+            "Dhaka": ["Dhaka","Gazipur","Kishoreganj","Manikganj","Munshiganj","Narayanganj","Narsingdi","Tangail","Faridpur","Gopalganj","Madaripur","Rajbari","Shariatpur"],
+            "Chattogram": ["Chattogram","Bandarban","Brahmanbaria","Chandpur","Cumilla","Cox's Bazar","Feni","Khagrachari","Lakshmipur","Noakhali","Rangamati"],
+            "Rajshahi": ["Bogura","Joypurhat","Naogaon","Natore","Chapainawabganj","Pabna","Rajshahi","Sirajganj"],
+            "Khulna": ["Bagerhat","Chuadanga","Jashore","Jhenaidah","Khulna","Kushtia","Magura","Meherpur","Narail","Satkhira"],
+            "Barishal": ["Barguna","Barishal","Bhola","Jhalokathi","Patuakhali","Pirojpur"],
+            "Sylhet": ["Habiganj","Moulvibazar","Sunamganj","Sylhet"],
+            "Rangpur": ["Dinajpur","Gaibandha","Kurigram","Lalmonirhat","Nilphamari","Panchagarh","Rangpur","Thakurgaon"],
+            "Mymensingh": ["Jamalpur","Mymensingh","Netrokona","Sherpur"]
+        };
+        const dv = document.getElementById('c-div');
+        Object.keys(bd).forEach(k => dv.innerHTML += `<option>${k}</option>`);
+        window.ldDist = () => {
+            let v = dv.value, ds = document.getElementById('c-dist'); ds.innerHTML="<option>Select</option>";
+            if(bd[v]) bd[v].forEach(x => ds.innerHTML+=`<option>${x}</option>`);
+        }
+
+        window.openOrderWin = (pid) => {
+            let p = products.find(x => x.id == pid);
+            document.getElementById('ord-pid').value = pid;
+            document.getElementById('ord-pd-title').innerText = p.nm + " - " + p.pr + " TK";
+            
+            // Generate Size Buttons
+            let sizeContainer = document.getElementById('size-options-container');
+            sizeContainer.innerHTML = "";
+            document.getElementById('ord-selected-size').value = ""; // Reset
+            
+            if(p.sz) {
+                let sizes = p.sz.split(',').map(s => s.trim());
+                sizes.forEach(s => {
+                    let btn = document.createElement('div');
+                    btn.className = "size-btn";
+                    btn.innerText = s;
+                    btn.onclick = function() {
+                        // Deselect others
+                        let all = document.querySelectorAll('.size-btn');
+                        all.forEach(a => a.classList.remove('selected'));
+                        // Select this
+                        this.classList.add('selected');
+                        document.getElementById('ord-selected-size').value = s;
+                    }
+                    sizeContainer.appendChild(btn);
+                });
+            } else {
+                sizeContainer.innerHTML = "<small>One Size</small>";
+                document.getElementById('ord-selected-size').value = "Standard";
+            }
+
+            document.getElementById('modal-order').style.display='flex';
+        }
+
+        window.placeOrder = (e) => {
+            e.preventDefault();
+            let pid = document.getElementById('ord-pid').value;
+            let sz = document.getElementById('ord-selected-size').value;
+            let p = products.find(x=>x.id==pid);
+
+            if(!sz) { alert("Please click a Size button!"); return; }
+
+            push(ref(db, 'orders'), {
+                pid: pid, item: p.nm, sz: sz, 
+                nm: document.getElementById('c-name').value, ph: document.getElementById('c-phone').value,
+                addr: dv.value+", "+document.getElementById('c-dist').value+", "+document.getElementById('c-addr').value,
+                st: "Pending", ts: Date.now()
+            });
+            alert("আপনার whatsapp নাম্বার একটি অর্ডার কনফার্ম কল আসবে দয়া করে কলটা রিসিভ করবেন");
+            document.getElementById('modal-order').style.display='none';
+        }
+
+        // HELPERS
+        window.doLogout = () => { signOut(auth); location.reload(); }
+        window.exitAdmin = () => { document.getElementById('view-admin').style.display='none'; document.getElementById('view-home').style.display='block'; }
+        window.showAuth = () => document.getElementById('view-auth').style.display='block';
+        window.hideAuth = () => document.getElementById('view-auth').style.display='none';
+        window.goHome = () => location.reload();
+        
+        window.toggleTheme = () => { let b=document.body; b.setAttribute('data-theme', b.getAttribute('data-theme')=='light'?'dark':'light'); }
+        window.doSearch = () => { let v=document.getElementById('search-input').value.toLowerCase(); renderP(products.filter(x=>x.nm.toLowerCase().includes(v))); }
+        
+        const trn = { en:{welcome:"Welcome", sub:"Fast Delivery"}, bn:{welcome:"স্বাগতম", sub:"দ্রুত ডেলিভারি"} };
+        window.toggleLang = () => {
+            isBn = !isBn;
+            document.getElementById('btn-lang').innerText = isBn ? "English" : "বাংলা";
+            let t = isBn ? trn.bn : trn.en;
+            if(isBn) {
+               document.querySelector('.trn[key="welcome"]').innerText = "SMP তে স্বাগতম";
+               document.querySelector('.trn[key="sub"]').innerText = "নিরাপদ ও দ্রুত ডেলিভারি (৬৪ জেলা)";
+               document.querySelector('.trn-ph').placeholder = "পণ্য খুঁজুন...";
+            } else {
+               document.querySelector('.trn[key="welcome"]').innerText = "Welcome to SMP";
+               document.querySelector('.trn[key="sub"]').innerText = "Safe & Fast Delivery (64 Dist)";
+               document.querySelector('.trn-ph').placeholder = "Search Products...";
+            }
+        }
+
+    </script>
+</body>
+</html>
